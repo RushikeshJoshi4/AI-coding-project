@@ -48,6 +48,28 @@ class BTSolver:
                 The bool is true if assignment is consistent, false otherwise.
     """
     def forwardChecking ( self ):
+        self.trail.placeTrailMarker()
+        assingedVariables = []
+        for variable in self.network.variables:
+            if variable.isAssigned() and variable.isModified():
+                assingedVariables.append(variable)
+                for varNeighbor in self.network.getNeighborsOfVariable(variable):
+                    if varNeighbor.domain.contains(variable.getAssignment())
+                        self.trail.push(neighbor)
+                        neighbor.removeValueFromDomain(v.getAssignment())
+                    if varNeighbor.domain.isEmpty():
+                        for assign in assingedVariables:
+                            assign.setModified(True)
+                        self.trail.undo()
+                        return False
+                variable.setModified(False)
+        self.trail.trailMarker.pop()
+        return True
+
+
+
+
+
         return ({},False)
 
     # =================================================================
