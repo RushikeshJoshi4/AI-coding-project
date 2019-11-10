@@ -48,15 +48,18 @@ class BTSolver:
                 The bool is true if assignment is consistent, false otherwise.
     """
     def forwardChecking ( self ):
+
+
+
         self.trail.placeTrailMarker()
         assingedVariables = []
         for variable in self.network.variables:
             if variable.isAssigned() and variable.isModified():
                 assingedVariables.append(variable)
                 for varNeighbor in self.network.getNeighborsOfVariable(variable):
-                    if varNeighbor.domain.contains(variable.getAssignment())
-                        self.trail.push(neighbor)
-                        neighbor.removeValueFromDomain(v.getAssignment())
+                    if varNeighbor.domain.contains(variable.getAssignment()):
+                        self.trail.push(varNeighbor)
+                        varNeighbor.removeValueFromDomain(variable.getAssignment())
                     if varNeighbor.domain.isEmpty():
                         for assign in assingedVariables:
                             assign.setModified(True)
@@ -69,8 +72,7 @@ class BTSolver:
 
 
 
-
-        return ({},False)
+        
 
     # =================================================================
 	# Arc Consistency
@@ -109,14 +111,7 @@ class BTSolver:
                 The bool is true if assignment is consistent, false otherwise.
     """
     def norvigCheck ( self ):
-        return ({}, False)
-
-    """
-         Optional TODO: Implement your own advanced Constraint Propagation
-
-         Completing the three tourn heuristic will automatically enter
-         your program into a tournament.
-     """
+        return ({},False) 
     def getTournCC ( self ):
         return False
 
@@ -139,7 +134,7 @@ class BTSolver:
         Return: The unassigned variable with the smallest domain
     """
     def getMRV ( self ):
-        return None
+        return None        
 
     """
         Part 2 TODO: Implement the Degree Heuristic
@@ -159,7 +154,6 @@ class BTSolver:
     """
     def MRVwithTieBreaker ( self ):
         return None
-
     """
          Optional TODO: Implement your own advanced Variable Heuristic
 
@@ -187,14 +181,36 @@ class BTSolver:
         Return: A list of v's domain sorted by the LCV heuristic
                 The LCV is first and the MCV is last
     """
-    def getValuesLCVOrder ( self, v ):
-        return None
+
+    def getValuesLCVOrder(self, v):
+        """
+            TODO: LCV heuristic
+        """ 
+        temp = {}
+        for value in v.domain.values:
+            count = 0
+            for neighborV in self.network.getNeighborsOfVariable(v):
+                if value in neighborV.domain.values:
+                    count = count +1
+            temp[value]=count
+        sortedTemp = sorted(temp.items(),key= lambda x:x[1])
+        result = []
+        for item in sortedTemp:
+            result.append(item[0])
+        return result
+    
+
+
+
+
+
 
     """
          Optional TODO: Implement your own advanced Value Heuristic
 
          Completing the three tourn heuristic will automatically enter
          your program into a tournament.
+
      """
     def getTournVal ( self, v ):
         return None
@@ -245,7 +261,7 @@ class BTSolver:
 
     def checkConsistency ( self ):
         if self.cChecks == "forwardChecking":
-            return self.forwardChecking()[1]
+            return self.forwardChecking()
 
         if self.cChecks == "norvigCheck":
             return self.norvigCheck()[1]
@@ -264,7 +280,7 @@ class BTSolver:
             return self.getDegree()
 
         if self.varHeuristics == "MRVwithTieBreaker":
-            return self.MRVwithTieBreaker()[0]
+            return self.MRVwithTieBreaker()
 
         if self.varHeuristics == "tournVar":
             return self.getTournVar()
