@@ -115,23 +115,16 @@ class BTSolver:
     def getTournCC ( self ):
         return False
 
-    def _getAllUnassignedVariables(self):
+
+    # ==================================================================
+    # Utility functions
+    # =================================================================
+        def _getAllUnassignedVariables(self):
         unassignedVariables = []
         for v in self.network.variables:
             if not v.isAssigned():
                 unassignedVariables.append(v)
         return unassignedVariables
-    # ==================================================================
-    # Utility functions
-    # ==================================================================
-
-    def _getAllUnassignedVariables(self):
-        unassignedVariables = []
-        for v in self.network.variables:
-            if not v.isAssigned():
-                unassignedVariables.append(v)
-        return v
-
     # ==================================================================
     # Variable Selectors
     # ==================================================================
