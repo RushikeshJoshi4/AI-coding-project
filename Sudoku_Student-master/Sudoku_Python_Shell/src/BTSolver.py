@@ -121,6 +121,17 @@ class BTSolver:
         return False
 
     # ==================================================================
+    # Utility functions
+    # ==================================================================
+
+    def _getAllUnassignedVariables(self):
+        unassignedVariables = []
+        for v in self.network.variables:
+            if not v.isAssigned():
+                unassignedVariables.push(v)
+        return v
+
+    # ==================================================================
     # Variable Selectors
     # ==================================================================
 
@@ -139,7 +150,14 @@ class BTSolver:
         Return: The unassigned variable with the smallest domain
     """
     def getMRV ( self ):
-        return None
+        variables = self._getAllUnassignedVariables()
+        min_ = float('inf')
+        min_variable = None
+        for v in variables:
+            if min_ > len(v.domain.values):
+                min_ = len(v.domain.values)
+                min_variable = v
+        return v
 
     """
         Part 2 TODO: Implement the Degree Heuristic
