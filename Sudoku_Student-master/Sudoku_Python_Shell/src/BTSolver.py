@@ -119,12 +119,12 @@ class BTSolver:
     # ==================================================================
     # Utility functions
     # =================================================================
-        def _getAllUnassignedVariables(self):
-            unassignedVariables = []
-            for v in self.network.variables:
-                if not v.isAssigned():
-                    unassignedVariables.append(v)
-            return unassignedVariables
+    def _getAllUnassignedVariables(self):
+        unassignedVariables = []
+        for v in self.network.variables:
+            if not v.isAssigned():
+                unassignedVariables.append(v)
+        return unassignedVariables
     # ==================================================================
     # Variable Selectors
     # ==================================================================
