@@ -115,6 +115,12 @@ class BTSolver:
     def getTournCC ( self ):
         return False
 
+    def _getAllUnassignedVariables(self):
+        unassignedVariables = []
+        for v in self.network.variables:
+            if not v.isAssigned():
+                unassignedVariables.append(v)
+        return unassignedVariables
     # ==================================================================
     # Utility functions
     # ==================================================================
@@ -123,7 +129,7 @@ class BTSolver:
         unassignedVariables = []
         for v in self.network.variables:
             if not v.isAssigned():
-                unassignedVariables.push(v)
+                unassignedVariables.append(v)
         return v
 
     # ==================================================================
@@ -152,8 +158,7 @@ class BTSolver:
             if min_ > len(v.domain.values):
                 min_ = len(v.domain.values)
                 min_variable = v
-        return v
-              
+        return min_variable        
 
 
     """
