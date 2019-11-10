@@ -115,6 +115,12 @@ class BTSolver:
     def getTournCC ( self ):
         return False
 
+    def _getAllUnassignedVariables(self):
+        unassignedVariables = []
+        for v in self.network.variables:
+            if not v.isAssigned():
+                unassignedVariables.append(v)
+        return unassignedVariables
     # ==================================================================
     # Variable Selectors
     # ==================================================================
@@ -134,7 +140,14 @@ class BTSolver:
         Return: The unassigned variable with the smallest domain
     """
     def getMRV ( self ):
-        return None        
+        variables = self._getAllUnassignedVariables()
+        min_ = float('inf')
+        min_variable = None
+        for v in variables:
+            if min_ > len(v.domain.values):
+                min_ = len(v.domain.values)
+                min_variable = v
+        return min_variable        
 
     """
         Part 2 TODO: Implement the Degree Heuristic
