@@ -36,13 +36,10 @@ class BTSolver:
 
     """
         Part 1 TODO: Implement the Forward Checking Heuristic
-
         This function will do both Constraint Propagation and check
         the consistency of the network
-
         (1) If a variable is assigned then eliminate that value from
             the square's neighbors.
-
         Note: remember to trail.push variables before you assign them
         Return: a tuple of a dictionary and a bool. The dictionary contains all MODIFIED variables, mapped to their MODIFIED domain.
                 The bool is true if assignment is consistent, false otherwise.
@@ -53,8 +50,9 @@ class BTSolver:
 
         self.trail.placeTrailMarker()
         assingedVariables = []
+        mapV = {}
         for variable in self.network.variables:
-            if variable.isAssigned() and variable.isModified():
+            if variable.isAssigned():
                 assingedVariables.append(variable)
                 for varNeighbor in self.network.getNeighborsOfVariable(variable):
                     if varNeighbor.domain.contains(variable.getAssignment()):
@@ -63,20 +61,20 @@ class BTSolver:
                     if varNeighbor.domain.isEmpty():
                         for assign in assingedVariables:
                             assign.setModified(True)
+                            mapV[varNeighbor] = varNeighbor.getDomain()
                         self.trail.undo()
-                        return False
-                variable.setModified(False)
+                        return [mapV, False]
+                    mapV[varNeighbor] = varNeighbor.getDomain()
         self.trail.trailMarker.pop()
-        return True
-
+        return [ mapV , True ] 
 
 
 
         
 
     # =================================================================
-	# Arc Consistency
-	# =================================================================
+    # Arc Consistency
+    # =================================================================
     def arcConsistency( self ):
         assignedVars = []
         for c in self.network.constraints:
@@ -95,19 +93,15 @@ class BTSolver:
     
     """
         Part 2 TODO: Implement both of Norvig's Heuristics
-
         This function will do both Constraint Propagation and check
         the consistency of the network
-
         (1) If a variable is assigned then eliminate that value from
             the square's neighbors.
-
         (2) If a constraint has only one possible place for a value
             then put the value there.
-
         Note: remember to trail.push variables before you assign them
         Return: a pair of a dictionary and a bool. The dictionary contains all variables 
-		        that were ASSIGNED during the whole NorvigCheck propagation, and mapped to the values that they were assigned.
+                that were ASSIGNED during the whole NorvigCheck propagation, and mapped to the values that they were assigned.
                 The bool is true if assignment is consistent, false otherwise.
     """
     def norvigCheck ( self ):
@@ -115,6 +109,10 @@ class BTSolver:
     def getTournCC ( self ):
         return False
 
+
+    # ==================================================================
+    # Utility functions
+    # =================================================================
     def _getAllUnassignedVariables(self):
         unassignedVariables = []
         for v in self.network.variables:
@@ -136,7 +134,6 @@ class BTSolver:
 
     """
         Part 1 TODO: Implement the Minimum Remaining Value Heuristic
-
         Return: The unassigned variable with the smallest domain
     """
     def getMRV ( self ):
@@ -149,9 +146,9 @@ class BTSolver:
                 min_variable = v
         return min_variable        
 
+
     """
         Part 2 TODO: Implement the Degree Heuristic
-
         Return: The unassigned variable with the most unassigned neighbors
     """
     def getDegree ( self ):
@@ -160,7 +157,6 @@ class BTSolver:
     """
         Part 2 TODO: Implement the Minimum Remaining Value Heuristic
                        with Degree Heuristic as a Tie Breaker
-
         Return: The unassigned variable with the smallest domain and affecting the  most unassigned neighbors.
                 If there are multiple variables that have the same smallest domain with the same number of unassigned neighbors, add them to the list of Variables.
                 If there is only one variable, return the list of size 1 containing that variable.
@@ -169,7 +165,6 @@ class BTSolver:
         return None
     """
          Optional TODO: Implement your own advanced Variable Heuristic
-
          Completing the three tourn heuristic will automatically enter
          your program into a tournament.
      """
@@ -187,10 +182,8 @@ class BTSolver:
 
     """
         Part 1 TODO: Implement the Least Constraining Value Heuristic
-
         The Least constraining value is the one that will knock the least
         values out of it's neighbors domain.
-
         Return: A list of v's domain sorted by the LCV heuristic
                 The LCV is first and the MCV is last
     """
@@ -220,10 +213,8 @@ class BTSolver:
 
     """
          Optional TODO: Implement your own advanced Value Heuristic
-
          Completing the three tourn heuristic will automatically enter
          your program into a tournament.
-
      """
     def getTournVal ( self, v ):
         return None
@@ -274,7 +265,7 @@ class BTSolver:
 
     def checkConsistency ( self ):
         if self.cChecks == "forwardChecking":
-            return self.forwardChecking()
+            return self.forwardChecking()[1]
 
         if self.cChecks == "norvigCheck":
             return self.norvigCheck()[1]
