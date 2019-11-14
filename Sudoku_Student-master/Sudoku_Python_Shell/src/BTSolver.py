@@ -45,9 +45,6 @@ class BTSolver:
                 The bool is true if assignment is consistent, false otherwise.
     """
     def forwardChecking ( self ):
-
-
-
         self.trail.placeTrailMarker()
         mapV = {}
         for variable in self.network.variables:
@@ -56,15 +53,13 @@ class BTSolver:
                     if varNeighbor.domain.contains(variable.getAssignment()):
                         self.trail.push(varNeighbor)
                         varNeighbor.removeValueFromDomain(variable.getAssignment())
+                        mapV[varNeighbor] = varNeighbor.getDomain()
                     if varNeighbor.domain.isEmpty():
                         self.trail.undo()
                         return [mapV, False]
-                    mapV[varNeighbor] = varNeighbor.getDomain()
+                    
         self.trail.trailMarker.pop()
         return [ mapV , True ] 
-
-
-
         
 
     # =================================================================
@@ -132,6 +127,9 @@ class BTSolver:
         Return: The unassigned variable with the smallest domain
     """
     def getMRV ( self ):
+        """
+        Note: need to handle edge case when all vars assigned
+        """
         variables = self._getAllUnassignedVariables()
         min_ = float('inf')
         min_variable = None
