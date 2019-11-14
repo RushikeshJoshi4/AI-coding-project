@@ -49,19 +49,14 @@ class BTSolver:
 
 
         self.trail.placeTrailMarker()
-        assingedVariables = []
         mapV = {}
         for variable in self.network.variables:
             if variable.isAssigned():
-                assingedVariables.append(variable)
                 for varNeighbor in self.network.getNeighborsOfVariable(variable):
                     if varNeighbor.domain.contains(variable.getAssignment()):
                         self.trail.push(varNeighbor)
                         varNeighbor.removeValueFromDomain(variable.getAssignment())
                     if varNeighbor.domain.isEmpty():
-                        for assign in assingedVariables:
-                            assign.setModified(True)
-                            mapV[varNeighbor] = varNeighbor.getDomain()
                         self.trail.undo()
                         return [mapV, False]
                     mapV[varNeighbor] = varNeighbor.getDomain()
