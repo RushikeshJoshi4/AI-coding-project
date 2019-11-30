@@ -62,6 +62,9 @@ class BTSolver:
                     
         # self.trail.trailMarker.pop()
         return [ mapV , True ] 
+
+
+
         
 
     # =================================================================
@@ -267,7 +270,68 @@ class BTSolver:
                 If there is only one variable, return the list of size 1 containing that variable.
     """
     def MRVwithTieBreaker ( self ):
-        return None
+        ans = []
+        min_domain = self.getMRV()
+        ans.append(min_domain)
+        if min_domain==None:
+            return [None]
+        for variable in self.network.variables:
+            if variable.size()==min_domain.size():
+                ans.append(variable)
+        maxDegree = -1
+        maxVariable = {}
+        temp = []
+        for var in ans:
+            count = 0
+            for varNeighbor in self.network.getNeighborsOfVariable(variable):
+                if not varNeighbor.isAssigned():
+                    count+=1
+            if count > maxDegree:
+                maxDegree = count
+                temp = []
+                temp.append(var)
+            if count == maxDegree:
+                temp.append(var)
+        return temp
+
+
+
+
+
+
+
+
+        '''
+        tieMRV = []
+        smallestVariableSize = float('inf')
+        for variable in self.network.variables:
+            if not variable.isAssigned():
+                if variable.size() <= smallestVariableSize  or tieMRV == []:
+                    if variable.size() == smallestVariableSize:
+                        tempList =  tieMRV
+                        tempList.append(variable)
+                        maxVariable = []
+                        largest = -1
+                        for var in tempList:
+                            constraintsVariable = self.network.getConstraintsContainingVariable(var)
+                            degreeCostraintVariable = []
+                            for constraint in constraintsVariable:
+                                varsConstraint = constraint.vars
+                                for v in varsConstraint:
+                                    if not v.isAssigned():
+                                        degreeCostraintVariable.append(v)
+                            if len(degreeCostraintVariable) >= largest:
+                                maxVariable.append(var)
+                                maxDegree = len(degreeCostraintVariable)
+                        tieMRV = maxVariable
+                        smallestVariableSize = maxDegree
+                    else:
+                        tieMRV = [variable]
+                        smallestVariableSize = variable.size()
+        
+        if(len(tieMRV)==0):
+            return [None]
+        return tieMRV'''
     """
          Optional TODO: Implement your own advanced Variable Heuristic
          Completing the three tourn heuristic will automatically enter
@@ -393,7 +457,8 @@ class BTSolver:
             return self.getDegree()
 
         if self.varHeuristics == "MRVwithTieBreaker":
-            return self.MRVwithTieBreaker()
+            return self.MRVwithTieBreaker()[0]
+
 
         if self.varHeuristics == "tournVar":
             return self.getTournVar()
