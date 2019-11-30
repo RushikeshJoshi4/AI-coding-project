@@ -121,4 +121,6 @@ class Variable:
         output = output.rstrip()
         output = output[:-1]
         output += "}"
+        output += " Row: " + str(self.row)
+        output += " Col: "+str(self.col)
         return output

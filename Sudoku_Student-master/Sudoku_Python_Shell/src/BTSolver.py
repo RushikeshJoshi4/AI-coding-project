@@ -6,6 +6,7 @@ import Constraint
 import ConstraintNetwork
 import time
 import random
+from pprint import pprint
 
 class BTSolver:
 
@@ -22,6 +23,7 @@ class BTSolver:
         self.varHeuristics = var_sh
         self.valHeuristics = val_sh
         self.cChecks = cc
+        self.count1=0
 
     # ==================================================================
     # Consistency Checks
@@ -45,7 +47,7 @@ class BTSolver:
                 The bool is true if assignment is consistent, false otherwise.
     """
     def forwardChecking ( self ):
-        self.trail.placeTrailMarker()
+        # self.trail.placeTrailMarker()
         mapV = {}
         for variable in self.network.variables:
             if variable.isAssigned():
@@ -55,10 +57,10 @@ class BTSolver:
                         varNeighbor.removeValueFromDomain(variable.getAssignment())
                         mapV[varNeighbor] = varNeighbor.getDomain()
                     if varNeighbor.domain.isEmpty():
-                        self.trail.undo()
+                        # self.trail.undo()
                         return [mapV, False]
                     
-        self.trail.trailMarker.pop()
+        # self.trail.trailMarker.pop()
         return [ mapV , True ] 
         
 
@@ -94,8 +96,120 @@ class BTSolver:
                 that were ASSIGNED during the whole NorvigCheck propagation, and mapped to the values that they were assigned.
                 The bool is true if assignment is consistent, false otherwise.
     """
+    
     def norvigCheck ( self ):
-        return ({},False) 
+        # self.trail.placeTrailMarker()
+        # print("incrementing count1")
+        # self.count1+=1
+        # if self.count1%100==0:
+        #     print(self.count1)
+        # if self.count1==10000:
+        #     print(self.count1)
+        #     import sys
+        #     sys.exit()
+        mapV = {}
+        for variable in self.network.variables:
+            if variable.isAssigned():
+                for varNeighbor in self.network.getNeighborsOfVariable(variable):
+                    if varNeighbor.domain.contains(variable.getAssignment()):
+                        self.trail.push(varNeighbor)
+                        varNeighbor.removeValueFromDomain(variable.getAssignment())
+                        
+                    if varNeighbor.domain.isEmpty():
+                        return [mapV, False]
+        
+        # for variable in self.network.variables:
+        #     if not variable.isAssigned:
+        #         if variable.domain.isEmpty():
+        #             print('******************************************88')
+        #             return [mapV, False]
+
+        #         if len(variable.domain.values)==1:
+        #             self.trail.push(variable)
+        #             variable.assign(variable.domain.values[0])
+
+        # print("Norvig check's first part is done!")
+        # print("Now, board is: ")
+        # print(self.gameboard)
+
+        rows = dict()
+        cols = dict()
+        blocks = dict()
+        for v in self.network.variables:
+            row = v.row
+            col = v.col
+            block = v.block
+
+            if not (row in rows.keys()):
+                rows[row] = []
+            if not (col in cols.keys()):
+                cols[col] = []
+            if not (block in blocks.keys()):
+                blocks[block] = []
+
+            rows[row].append(v)
+            cols[col].append(v)
+            blocks[block].append(v)
+
+        # for row in rows:
+        #     print("Row: "+str(row))
+        #     for var in rows[row]:
+        #         print(var)
+        #     print("")
+
+        unique_row, unique_col, unique_block = {}, {}, {}
+        for unit, unique in zip([rows, cols, blocks], [unique_row, unique_col, unique_block]):
+            # counter = [0] * (self.gameboard.N+1)
+            
+            for unit_key in unit.keys():
+                counter = [0] * (self.gameboard.N+1)
+                var_list = unit[unit_key]
+                # print("Var list:")
+                # for v in var_list:
+                #     print(v)
+                # print("-----------")
+
+                for v in var_list:
+                    if v.assigned: 
+                        counter[v.getAssignment()]+=1
+                        continue
+                    for value in v.domain.values:
+                        counter[value]+=1
+                        if counter[value]==1:
+                            # print("Assigning")
+                            # print("Value: "+str(value)+" Variable: ")
+                            # print(v)
+                            unique[value] = v
+                        elif counter[value]==2:
+                            # print("Deleting")
+                            # print("Value: "+str(value)+" Variable: ")
+                            # print(v)
+                            del unique[value]
+                
+                for i, counter_element in enumerate(counter):
+                    if counter_element ==0 and i !=0:
+                        return [mapV, False]
+            # print("uniq: ")
+            # pprint(unique)
+            # print('-----------------')
+            # break
+
+        # print(unique_row)
+        count = 0
+        for unique in unique_row, unique_col, unique_block:
+            for unique_key in unique:
+                count+=1
+                value = unique_key
+                v = unique[value]
+                self.trail.push(v)
+                v.assignValue(value)
+                mapV[v] = value
+        # if count!=3 and count!=0: print("norvig check count:"+str(count))
+
+        # self.trail.pop()
+        return [ mapV , True ] 
+
+    
     def getTournCC ( self ):
         return False
 
@@ -127,9 +241,6 @@ class BTSolver:
         Return: The unassigned variable with the smallest domain
     """
     def getMRV ( self ):
-        """
-        Note: need to handle edge case when all vars assigned
-        """
         variables = self._getAllUnassignedVariables()
         min_ = float('inf')
         min_variable = None
@@ -137,6 +248,7 @@ class BTSolver:
             if min_ > len(v.domain.values):
                 min_ = len(v.domain.values)
                 min_variable = v
+        # print('in getMRV returning '+str(min_variable))
         return min_variable        
 
 
@@ -225,6 +337,7 @@ class BTSolver:
 
         # check if the assigment is complete
         if ( v == None ):
+            # print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
             for var in self.network.variables:
 
                 # If all variables haven't been assigned
@@ -260,6 +373,9 @@ class BTSolver:
         if self.cChecks == "forwardChecking":
             return self.forwardChecking()[1]
 
+        # if self.cChecks == "arcConsistency":
+        #     return self.arcConsistency()
+
         if self.cChecks == "norvigCheck":
             return self.norvigCheck()[1]
 
@@ -283,7 +399,9 @@ class BTSolver:
             return self.getTournVar()
 
         else:
-            return self.getfirstUnassignedVariable()
+            x = self.getfirstUnassignedVariable()
+            # print('selectNextVariable was called, returning: '+str(x))
+            return x
 
     def getNextValues ( self, v ):
         if self.valHeuristics == "LeastConstrainingValue":

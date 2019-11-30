@@ -15,6 +15,7 @@ class SudokuBoard:
     # ==================================================================
 
     def __init__( self, p = None, q = None, m = None, board = None, filepath = None ):
+        # print('In init of SudokuBoard')
         self.p = p
         self.q = q
         try:
@@ -66,6 +67,10 @@ class SudokuBoard:
                 if self.board[randomRow][randomCol] == 0 and self.isValidValue( randomRow, randomCol, randomAssignment ):
                     self.board[randomRow][randomCol] = randomAssignment
                     m -= 1
+        # print('Init finished, board is: ')
+        # print(self)
+        # from pprint import pprint
+        # pprint(self.board)
 
     # ==================================================================
     # String representation

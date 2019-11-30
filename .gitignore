@@ -1,2 +1,6 @@
 Sudoku_Student-master/Sudoku_Python_Shell/bin
 *.pyc
+*.txt
+Sudoku_Student-master/Sudoku_Python_Shell/src/BTSolver2.py
+Sudoku_Student-master/Sudoku_Python_Shell/src/BTSolver3.py
+Sudoku_Student-master/Sudoku_Python_Shell/src/checkNOR.sh
