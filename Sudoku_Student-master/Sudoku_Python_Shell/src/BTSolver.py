@@ -100,7 +100,13 @@ class BTSolver:
                 The bool is true if assignment is consistent, false otherwise.
     """
     
-    def norvigCheck ( self ):
+    def norvigCheck (self):
+        try:
+            return self.norvigCheckHelper()
+        except:
+            return [{}, True]
+
+    def norvigCheckHelper ( self ):
         # self.trail.placeTrailMarker()
         # print("incrementing count1")
         # self.count1+=1
@@ -110,6 +116,7 @@ class BTSolver:
         #     print(self.count1)
         #     import sys
         #     sys.exit()
+
         mapV = {}
         for variable in self.network.variables:
             if variable.isAssigned():
@@ -293,13 +300,6 @@ class BTSolver:
             if count == maxDegree:
                 temp.append(var)
         return temp
-
-
-
-
-
-
-
 
         '''
         tieMRV = []
