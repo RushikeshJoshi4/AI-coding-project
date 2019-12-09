@@ -60,17 +60,20 @@ def genBoard ( p, q, m, filename ):
 
     file.close();
 
+def main():
+    if len(sys.argv) != 6:
+        print ( "Usage: Board_Generator Base_File_Name #ofBoards p q m" )
+        exit(0)
 
-if len(sys.argv) != 6:
-    print ( "Usage: Board_Generator Base_File_Name #ofBoards p q m" )
-    exit(0)
+    baseFileName = sys.argv[1]
+    numOfFiles = int(sys.argv[2])
+    p = int(sys.argv[3])
+    q = int(sys.argv[4])
+    m = int(sys.argv[5])
 
-baseFileName = sys.argv[1]
-numOfFiles = int(sys.argv[2])
-p = int(sys.argv[3])
-q = int(sys.argv[4])
-m = int(sys.argv[5])
+    for i in range(numOfFiles):
+        print ( "Creating world number: " + str(i) + "." )
+        genBoard( p, q, m, baseFileName + "_" + str(i) + ".txt" )
 
-for i in range(numOfFiles):
-    print ( "Creating world number: " + str(i) + "." )
-    genBoard( p, q, m, baseFileName + "_" + str(i) + ".txt" )
+if __name__=="__main__":
+    main()

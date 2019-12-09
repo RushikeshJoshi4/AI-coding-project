@@ -9,14 +9,31 @@ import ConstraintNetwork
 import BTSolver
 import Trail
 import time
+import io
 
 """
     Main driver file, which is responsible for interfacing with the
     command line and properly starting the backtrack solver.
 """
 
-def main ( ):
-    args = sys.argv
+def blockPrint():
+    sys.stdout = io.StringIO()
+
+def main (args_=[]):
+    to_print = True
+    args = None
+    # print(args_)
+    # print(args_)
+    if len(args_)==0:
+        args = sys.argv    
+    else:
+        args = args_[:-1]
+        if not args_[-1]:
+            to_print = False
+        #print("to_print: ",to_print)
+    
+    #if to_print:
+        #blockPrint()
 
     # Important Variables
     file   = "";
@@ -52,7 +69,7 @@ def main ( ):
 
     if file == "":
         sudokudata = SudokuBoard.SudokuBoard( 3,3,7)
-        print(sudokudata)
+        if to_print: print(sudokudata)
 
         solver = BTSolver.BTSolver( sudokudata, trail, val_sh, var_sh, cc )
         if cc in ["forwardChecking","norvigCheck","tournCC"]:
@@ -60,14 +77,15 @@ def main ( ):
         solver.solve()
 
         if solver.hassolution:
-            print( solver.getSolution() )
-            print( "Trail Pushes: " + str(trail.getPushCount()) )
-            print( "Backtracks: " + str(trail.getUndoCount()) )
+            if to_print: print( solver.getSolution() )
+            if to_print: print( "Trail Pushes: " + str(trail.getPushCount()) )
+            if to_print: print( "Backtracks: " + str(trail.getUndoCount()) )
 
         else:
-            print( "Failed to find a solution" )
+            if to_print: print( "Failed to find a solution" )
+            return False
 
-        return
+        return True
 
     if os.path.isdir(file):
         listOfBoards = None
@@ -75,12 +93,12 @@ def main ( ):
         try:
             listOfBoards = os.listdir ( file )
         except:
-            print ( "[ERROR] Failed to open directory." )
-            return
+            if to_print: print ( "[ERROR] Failed to open directory." )
+            return False
 
         numSolutions = 0
         for f in listOfBoards:
-            print ( "Running board: " + str(f) )
+            if to_print: print ( "Running board: " + str(f) )
             sudokudata = SudokuBoard.SudokuBoard( filepath=os.path.join( file, f ) )
 
             solver = BTSolver.BTSolver( sudokudata, trail, val_sh, var_sh, cc )
@@ -91,14 +109,14 @@ def main ( ):
             if solver.hassolution:
                 numSolutions += 1;
 
-        print ( "Solutions Found: " + str(numSolutions) )
-        print ( "Trail Pushes: " + str(trail.getPushCount()) )
-        print ( "Backtracks: "  + str(trail.getUndoCount()) )
+        if to_print: print ( "Solutions Found: " + str(numSolutions) )
+        if to_print: print ( "Trail Pushes: " + str(trail.getPushCount()) )
+        if to_print: print ( "Backtracks: "  + str(trail.getUndoCount()) )
 
-        return
+        return True
 
     sudokudata =  SudokuBoard.SudokuBoard( filepath=os.path.abspath( file ) )
-    print(sudokudata)
+    if to_print: print(sudokudata)
 
     solver = BTSolver.BTSolver( sudokudata, trail, val_sh, var_sh, cc )
     if cc in ["forwardChecking","norvigCheck","tournCC"]:
@@ -106,11 +124,12 @@ def main ( ):
     solver.solve()
 
     if solver.hassolution:
-        print( solver.getSolution() )
-        print( "Trail Pushes: " + str(trail.getPushCount()) )
-        print( "Backtracks: " + str(trail.getUndoCount()) )
-
+        if to_print: print( solver.getSolution() )
+        if to_print: print( "Trail Pushes: " + str(trail.getPushCount()) )
+        if to_print: print( "Backtracks: " + str(trail.getUndoCount()) )
+        return True
     else:
-        print( "Failed to find a solution" )
+        if to_print: print( "Failed to find a solution" )
+        return False
 
-main()
+# main()

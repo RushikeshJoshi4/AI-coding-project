@@ -4,3 +4,7 @@ Sudoku_Student-master/Sudoku_Python_Shell/bin
 Sudoku_Student-master/Sudoku_Python_Shell/src/BTSolver2.py
 Sudoku_Student-master/Sudoku_Python_Shell/src/BTSolver3.py
 Sudoku_Student-master/Sudoku_Python_Shell/src/checkNOR.sh
+*.csv
+mean_times_*
+success_rates_*
+generator_script.sh
