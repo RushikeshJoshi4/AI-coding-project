@@ -15,7 +15,11 @@ for p, q in zip(ps, qs):
         
         # pathlib.Path(base+dir_name).mkdir(parents=True, exist_ok=True)
         
+        if not os.path.exists(base+dir_name):
+            os.mkdir(base+dir_name)
+
         for i in range(20):
+            
             genBoard(p, q, m, base+dir_name+"board_"+str(i)+".txt")
     
 
