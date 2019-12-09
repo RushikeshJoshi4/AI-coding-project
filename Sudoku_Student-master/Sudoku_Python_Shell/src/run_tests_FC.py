@@ -23,7 +23,7 @@ def foo():
     out_file_name = out_file_dir+"exe_times_FC.txt"
     
     # pathlib.Path(out_file_dir).mkdir(parents=True, exist_ok=True)
-    
+
     if os.path.exists(out_file_name):
         os.remove(out_file_name)
 
@@ -33,11 +33,12 @@ def foo():
     print(ms)
     for m in ms:
         dir_name = "boards_p_"+str(p)+"_q_"+str(q)+"/m_"+str(m)+"/"
-
+        
         filenames = os.listdir(base+dir_name)
         filenames = sorted(filenames)
         count = 0
         for filename in filenames:
+
             if count>=no_of_tables:
                 break
             args = ["Main.py", ["FC"], base+dir_name+filename, False]

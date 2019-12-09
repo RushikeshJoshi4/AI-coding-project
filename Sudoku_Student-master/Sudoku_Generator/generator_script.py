@@ -3,7 +3,7 @@ import os
 import pathlib
 
 ps = [3]
-qs = [4]
+qs = [3]
 
 base = "../boards_for_report/"
 
