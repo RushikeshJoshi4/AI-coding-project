@@ -1,6 +1,5 @@
 from board_generator import genBoard
 import os
-import pathlib
 
 ps = [3]
 qs = [3]
