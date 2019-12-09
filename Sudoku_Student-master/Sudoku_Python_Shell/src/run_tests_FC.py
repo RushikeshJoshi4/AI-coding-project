@@ -7,7 +7,7 @@ import sys
 import time
 from wrapt_timeout_decorator import *
 
-@timeout(400)
+@timeout(200)
 def main_decorator(args):
     start_time = time.time()
     output = main(args)
@@ -15,12 +15,12 @@ def main_decorator(args):
     return [end_time - start_time,output]
 
 def foo():
-    p, q = (3, 4)
+    p, q = (3, 3)
     no_of_tables = 4
 
     base = "../../boards_for_report/"
     out_file_dir = "../../outputs/"
-    out_file_name = out_file_dir+"monster_exe_times_FC.txt"
+    out_file_name = out_file_dir+"exe_times_FC.txt"
     
     pathlib.Path(out_file_dir).mkdir(parents=True, exist_ok=True)
     if os.path.exists(out_file_name):
