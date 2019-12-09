@@ -5,7 +5,7 @@ import time
 import sys
 
 import time
-from wrapt_timeout_decorator import *
+from timeout import timeout
 
 @timeout(200)
 def main_decorator(args):
@@ -22,7 +22,8 @@ def foo():
     out_file_dir = "../../outputs/"
     out_file_name = out_file_dir+"exe_times_FC.txt"
     
-    pathlib.Path(out_file_dir).mkdir(parents=True, exist_ok=True)
+    # pathlib.Path(out_file_dir).mkdir(parents=True, exist_ok=True)
+    
     if os.path.exists(out_file_name):
         os.remove(out_file_name)
 
